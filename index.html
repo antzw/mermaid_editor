@@ -64,12 +64,13 @@
   <section id="preview" aria-label="Diagram preview"></section>
 
   <script type="module">
-    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.0.0/dist/mermaid.esm.min.mjs";
 
     const sourceEl = document.getElementById("source");
     const previewEl = document.getElementById("preview");
     const errorEl = document.getElementById("error");
     let renderRequest = 0;
+    let debounceTimer;
 
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
 
@@ -103,7 +104,10 @@
     }
 
     sourceEl.addEventListener("input", () => {
-      void renderDiagram();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        void renderDiagram();
+      }, 200);
     });
 
     void renderDiagram();
