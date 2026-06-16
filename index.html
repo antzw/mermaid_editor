@@ -124,6 +124,9 @@
         void renderDiagram();
       }, DEBOUNCE_MS);
     });
+    window.addEventListener("beforeunload", () => {
+      clearTimeout(debounceTimer);
+    });
 
     void renderDiagram();
   </script>
