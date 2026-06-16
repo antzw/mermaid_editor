@@ -69,6 +69,7 @@
     const sourceEl = document.getElementById("source");
     const previewEl = document.getElementById("preview");
     const errorEl = document.getElementById("error");
+    const DEBOUNCE_DELAY_MS = 200;
     let renderVersion = 0;
     let debounceTimer;
 
@@ -107,7 +108,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         void renderDiagram();
-      }, 200);
+      }, DEBOUNCE_DELAY_MS);
     });
 
     void renderDiagram();
