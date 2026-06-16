@@ -99,7 +99,7 @@
           return;
         }
         previewEl.innerHTML = "";
-        errorEl.textContent = error instanceof Error ? error.message : "Unable to render diagram.";
+        errorEl.textContent = error instanceof Error ? error.message : `Unable to render diagram: ${String(error)}`;
       }
     }
 
