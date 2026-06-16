@@ -69,7 +69,7 @@
     const sourceEl = document.getElementById("source");
     const previewEl = document.getElementById("preview");
     const errorEl = document.getElementById("error");
-    const DEBOUNCE_DELAY_MS = 200;
+    const DEBOUNCE_MS = 200;
     let renderVersion = 0;
     let debounceTimer;
 
@@ -81,7 +81,7 @@
 
       if (!source) {
         previewEl.innerHTML = "";
-        errorEl.textContent = "Enter Mermaid diagram text.";
+        errorEl.textContent = "No diagram to display.";
         return;
       }
 
@@ -108,7 +108,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         void renderDiagram();
-      }, DEBOUNCE_DELAY_MS);
+      }, DEBOUNCE_MS);
     });
 
     void renderDiagram();
