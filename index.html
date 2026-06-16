@@ -69,13 +69,13 @@
     const sourceEl = document.getElementById("source");
     const previewEl = document.getElementById("preview");
     const errorEl = document.getElementById("error");
-    let renderRequest = 0;
+    let renderVersion = 0;
     let debounceTimer;
 
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
 
     async function renderDiagram() {
-      const currentRequest = ++renderRequest;
+      const currentRequest = ++renderVersion;
       const source = sourceEl.value.trim();
 
       if (!source) {
@@ -88,14 +88,14 @@
         const id = `mermaid-${currentRequest}`;
         const { svg } = await mermaid.render(id, source);
 
-        if (currentRequest !== renderRequest) {
+        if (currentRequest !== renderVersion) {
           return;
         }
 
         previewEl.innerHTML = svg;
         errorEl.textContent = "";
       } catch (error) {
-        if (currentRequest !== renderRequest) {
+        if (currentRequest !== renderVersion) {
           return;
         }
         previewEl.innerHTML = "";
