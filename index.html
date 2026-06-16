@@ -7,6 +7,12 @@
   <style>
     :root {
       color-scheme: light dark;
+      --border-color: #cfcfcf;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --border-color: #666;
+      }
     }
     body {
       margin: 0;
@@ -18,7 +24,7 @@
     .panel {
       padding: 1rem;
       box-sizing: border-box;
-      border-right: 1px solid #cfcfcf;
+      border-right: 1px solid var(--border-color);
     }
     textarea {
       width: 100%;
@@ -44,12 +50,13 @@
       }
       .panel {
         border-right: 0;
-        border-bottom: 1px solid #cfcfcf;
+        border-bottom: 1px solid var(--border-color);
       }
       textarea {
         height: 40vh;
       }
     }
+
   </style>
 </head>
 <body>
@@ -74,6 +81,13 @@
     let debounceTimer;
 
     mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
+
+    function formatRenderError(error) {
+      if (error instanceof Error) {
+        return error.message;
+      }
+      return `Unable to render diagram: ${String(error)}`;
+    }
 
     async function renderDiagram() {
       const currentRequest = ++renderVersion;
@@ -100,7 +114,7 @@
           return;
         }
         previewEl.innerHTML = "";
-        errorEl.textContent = error instanceof Error ? error.message : `Unable to render diagram: ${String(error)}`;
+        errorEl.textContent = formatRenderError(error);
       }
     }
 
