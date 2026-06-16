@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mermaid Editor</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(280px, 40%) 1fr;
+    }
+    .panel {
+      padding: 1rem;
+      box-sizing: border-box;
+      border-right: 1px solid #cfcfcf;
+    }
+    textarea {
+      width: 100%;
+      height: calc(100vh - 5rem);
+      box-sizing: border-box;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.4;
+      resize: vertical;
+    }
+    #preview {
+      padding: 1rem;
+      overflow: auto;
+    }
+    #error {
+      color: #b00020;
+      margin: 0.5rem 0 0;
+      min-height: 1.25rem;
+    }
+    @media (max-width: 900px) {
+      body {
+        grid-template-columns: 1fr;
+      }
+      .panel {
+        border-right: 0;
+        border-bottom: 1px solid #cfcfcf;
+      }
+      textarea {
+        height: 40vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="panel">
+    <h1>Mermaid Editor</h1>
+    <textarea id="source" spellcheck="false">flowchart TD
+  A[Start] --> B{Decision}
+  B -- Yes --> C[Result 1]
+  B -- No --> D[Result 2]</textarea>
+    <p id="error" role="status" aria-live="polite"></p>
+  </section>
+  <section id="preview" aria-label="Diagram preview"></section>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+    const sourceEl = document.getElementById("source");
+    const previewEl = document.getElementById("preview");
+    const errorEl = document.getElementById("error");
+    let renderRequest = 0;
+
+    mermaid.initialize({ startOnLoad: false, securityLevel: "strict" });
+
+    async function renderDiagram() {
+      const currentRequest = ++renderRequest;
+      const source = sourceEl.value.trim();
+
+      if (!source) {
+        previewEl.innerHTML = "";
+        errorEl.textContent = "Enter Mermaid diagram text.";
+        return;
+      }
+
+      try {
+        const id = `mermaid-${currentRequest}`;
+        const { svg } = await mermaid.render(id, source);
+
+        if (currentRequest !== renderRequest) {
+          return;
+        }
+
+        previewEl.innerHTML = svg;
+        errorEl.textContent = "";
+      } catch (error) {
+        if (currentRequest !== renderRequest) {
+          return;
+        }
+        previewEl.innerHTML = "";
+        errorEl.textContent = error instanceof Error ? error.message : "Unable to render diagram.";
+      }
+    }
+
+    sourceEl.addEventListener("input", () => {
+      void renderDiagram();
+    });
+
+    void renderDiagram();
+  </script>
+</body>
+</html>
